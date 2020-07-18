@@ -19,8 +19,8 @@
 			function setOnline() {
 				$("#status").removeClass("label-warning");
 				$("#status").addClass("label-success");
-				$("#status").html("Connected");
-				$("button.connect").html("Disconnect");
+				$("#status").html("Conectado");
+				$("button.connect").html("Desconectar");
 				$("#offlineActions").hide();
 				$("#onlineActions").show();
 				isConnected = true;
@@ -29,8 +29,8 @@
 			function setOffline() {
 				$("#status").addClass("label-warning");
 				$("#status").removeClass("label-success");
-				$("#status").html("Disconnected");
-				$("button.connect").html("Connect");
+				$("#status").html("Desconectado");
+				$("button.connect").html("Conectar");
 				$("#offlineActions").show();
 				$("#onlineActions").hide();
 				isConnected = false;
@@ -62,30 +62,30 @@
 				conn.onopen = function(e) {
 					console.log(e);
 					setOnline();
-					console.log("Connected");
+					console.log("Conectado");
 					isConnected = true;
 				};
 
 				conn.onclose = function(e) {
-					console.log("Disconnected");
+					console.log("Desconectado");
 					setOffline();
 				};
 			}
 		</script>
 	</head>
 	<body>
-		<h3> Mi version de websockets</h3>
+		<h3> Intento de chat con websockets</h3>
 
 		<div id="offlineActions">
-			<div>Server IP: <input type="text" id="conn_str" value="127.0.0.1:8080"></div>
+			<div>Server IP + Puerto: <input type="text" id="conn_str" value="127.0.0.1:8080"></div>
 		</div>
 		<div id="statusBox">
-			<span id="status" class="label label-warning">Disconnected</span>
-			<button onclick='toggleConnect();' class="connect">Connect</button>
+			<span id="status" class="label label-warning">Desconectado</span>
+			<button onclick='toggleConnect();' class="connect">Conectar</button>
 		</div>
 		<div id="onlineActions" class="display: none">
 			<input type="text" id="message">
-			<button onclick="send();" class="send">Send Message</button>
+			<button onclick="send();" class="send">Enviar Mensaje</button>
 		</div>
 		<div id="chatTarget" style="overflow-x: scroll; height: 400px; max-height: 400px;">
 		</div>
