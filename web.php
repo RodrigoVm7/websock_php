@@ -74,6 +74,8 @@
 		</script>
 	</head>
 	<body>
+		<?php require 'partials/header.php' ?>
+		
 		<h3> Intento de chat con websockets</h3>
 
 		<div id="offlineActions">
