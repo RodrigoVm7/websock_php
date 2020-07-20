@@ -1,3 +1,7 @@
+<?php 
+	$nombre = $_POST['nombre'];
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 	<head>
@@ -6,6 +10,16 @@
 
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+		<style>
+			html{
+				width: 100%;
+			}
+			body{
+				width: 100%;
+				text-align: center;
+			}
+		</style>
 
 		<script>
 
@@ -42,8 +56,10 @@
 					alert("Can't send an empty message");
 					return;
 				}
-				conn.send(msg);
-				$("#chatTarget").prepend("Me: "+ msg + "<br/>");
+				// let datos = ["<?php echo $nombre ?>",msg]
+				dato= "<?php echo $nombre ?>"+ ": " + msg;
+				conn.send(dato); //// Aqui deberia retornar un arreglo donde la primera posicion nevio el nombre del usuario que esta enviando el mensaje y en la segunda posicion se envia el mensaje.
+				$("#chatTarget").prepend( dato + "<br/>");
 				$("#message").val("");
 			}
 
@@ -56,7 +72,7 @@
 				conn = new WebSocket(uri);
 
 				conn.onmessage = function(e) {
-					$("#chatTarget").prepend("Not me: "+e.data+"<br/>");
+					$("#chatTarget").prepend(e.data+"<br/>");
 				}
 
 				conn.onopen = function(e) {
@@ -73,7 +89,7 @@
 			}
 		</script>
 	</head>
-	<body>
+	<body style="margin: 0 auto;">
 		<h3> Intento de chat con websockets</h3>
 
 		<div id="offlineActions">
