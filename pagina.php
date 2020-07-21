@@ -57,7 +57,7 @@
 					return;
 				}
 				// let datos = ["<?php echo $nombre ?>",msg]
-				dato= "<?php echo $nombre ?>"+ ": " + msg;
+				dato= "<?php echo "<b>".$nombre."</b>"?>"+ ": " + msg;
 				conn.send(dato); //// Aqui deberia retornar un arreglo donde la primera posicion nevio el nombre del usuario que esta enviando el mensaje y en la segunda posicion se envia el mensaje.
 				$("#chatTarget").prepend( dato + "<br/>");
 				$("#message").val("");
@@ -90,7 +90,7 @@
 		</script>
 	</head>
 	<body style="margin: 0 auto;">
-		<h3> Intento de chat con websockets</h3>
+		<h3> Chat con websockets: <?php echo "<b>".$nombre."</b>"?></h3> <a href="index.php">SALIR</a>
 
 		<div id="offlineActions">
 			<div>Server IP + Puerto: <input type="text" id="conn_str" value="127.0.0.1:8080"></div>
