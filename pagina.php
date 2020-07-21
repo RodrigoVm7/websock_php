@@ -34,7 +34,7 @@
 				$("#status").removeClass("label-warning");
 				$("#status").addClass("label-success");
 				$("#status").html("Conectado");
-				$("button.connect").html("Desconectar");
+				$("button.connect").html("Finalizar conversacion");
 				$("#offlineActions").hide();
 				$("#onlineActions").show();
 				isConnected = true;
@@ -44,7 +44,7 @@
 				$("#status").addClass("label-warning");
 				$("#status").removeClass("label-success");
 				$("#status").html("Desconectado");
-				$("button.connect").html("Conectar");
+				$("button.connect").html("Iniciar conversacion");
 				$("#offlineActions").show();
 				$("#onlineActions").hide();
 				isConnected = false;
