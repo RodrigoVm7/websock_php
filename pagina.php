@@ -23,7 +23,7 @@
 
 		<script>
 
-			var conn = null;
+			var socket = null;
 			var isConnected = false;
 
 			$(function() {
@@ -58,7 +58,7 @@
 				}
 				// let datos = ["<?php echo $nombre ?>",msg]
 				dato= "<?php echo "<b>".$nombre."</b>"?>"+ ": " + msg;
-				conn.send(dato); //// Aqui deberia retornar un arreglo donde la primera posicion nevio el nombre del usuario que esta enviando el mensaje y en la segunda posicion se envia el mensaje.
+				socket.send(dato); //// Aqui deberia retornar un arreglo donde la primera posicion nevio el nombre del usuario que esta enviando el mensaje y en la segunda posicion se envia el mensaje.
 				$("#chatTarget").prepend( dato + "<br/>");
 				$("#message").val("");
 			}
@@ -69,20 +69,20 @@
 					setOffline();
 					return;
 				}
-				conn = new WebSocket(uri);
+				socket = new WebSocket(url);
 
-				conn.onmessage = function(e) {
+				socket.onmessage = function(e) {
 					$("#chatTarget").prepend(e.data+"<br/>");
 				}
 
-				conn.onopen = function(e) {
+				socket.onopen = function(e) {
 					console.log(e);
 					setOnline();
 					console.log("Conectado");
 					isConnected = true;
 				};
 
-				conn.onclose = function(e) {
+				socket.onclose = function(e) {
 					console.log("Desconectado");
 					setOffline();
 				};
