@@ -64,7 +64,7 @@
 			}
 
 			function toggleConnect() {
-				var uri = "ws://" + $("#conn_str").val();
+				var url = "ws://" + $("#conn_str").val();
 				if(isConnected) {
 					setOffline();
 					return;
