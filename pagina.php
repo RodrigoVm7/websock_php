@@ -50,20 +50,19 @@
 				isConnected = false;
 			}
 
-			function send() {
+			function enviar() {
 				msg = $("#message").val();
 				if (msg == "") {
-					alert("Can't send an empty message");
+					alert("No se puede enviar un mensaje vacío");
 					return;
 				}
-				// let datos = ["<?php echo $nombre ?>",msg]
 				dato= "<?php echo "<b>".$nombre."</b>"?>"+ ": " + msg;
-				socket.send(dato); //// Aqui deberia retornar un arreglo donde la primera posicion nevio el nombre del usuario que esta enviando el mensaje y en la segunda posicion se envia el mensaje.
+				socket.send(dato);
 				$("#chatTarget").prepend( dato + "<br/>");
 				$("#message").val("");
 			}
 
-			function toggleConnect() {
+			function establecerConexion() {
 				var url = "ws://" + $("#conn_str").val();
 				if(isConnected) {
 					setOffline();
@@ -97,11 +96,11 @@
 		</div>
 		<div id="statusBox">
 			<span id="status" class="label label-warning">Desconectado</span>
-			<button onclick='toggleConnect();' class="connect">Conectar</button>
+			<button onclick='establecerConexion();' class="connect">Conectar</button>
 		</div>
 		<div id="onlineActions" class="display: none">
 			<input type="text" id="message">
-			<button onclick="send();" class="send">Enviar Mensaje</button>
+			<button onclick="enviar();" class="send">Enviar Mensaje</button>
 		</div>
 		<div id="chatTarget" style="overflow-x: scroll; height: 400px; max-height: 400px;">
 		</div>
