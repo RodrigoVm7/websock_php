@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset='utf-8'>
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+		<style>
+			html{
+				width:100%;
+			}
+
+			body{
+				width: 100%;
+				text-align: center;
+			}
+		
+			.contactos{
+				width: 180px;
+				height: 250px;
+				position:absolute;
+				right: 10px;
+				top: 10px;
+				border:  #000 1px  solid;
+				overflow: scroll;
+				overflow-x: hidden;
+				box-shadow:5px 5px 5px grey;
+			}
+			.advertencia{
+				width: 600px;
+				height: 50px;
+				margin: 0 auto;
+				margin-bottom: 10px;
+				background-color: rgb(245, 81, 81);
+				color: white;
+				justify-content: center;
+				display: none;
+			}
+
+		
+		</style>
+
+		
+	</head>
+	<body>
+		<h3> Chat con websockets</h3>
+
+		<div id="contactos" class="contactos">
+			<h4 style="border-bottom: 1px black solid; margin-top: 2px;">Contactos</h4>
+		</div>
+
+		<div id="offlineActions">
+			<div class="advertencia" id="advertencia"></div>
+			<div>	
+				Alias: <input style="margin-right: 50px;" type="text" id="alias"  placeholder="Alias" required> 
+				Server IP + Puerto: <input type="text" id="conn_str" value="127.0.0.1:8080" required>
+			</div>
+		</div>
+		<div id="statusBox">
+			<span id="status" class="label label-warning">Desconectado</span>
+			<button onclick='establecerConexion();' class="connect">Conectar</button>
+		</div>
+		<div id="onlineActions" class="display: none">
+			<input type="text" id="message">
+			<button onclick="enviar();" class="send">Enviar Mensaje</button>
+		</div>
+		<div id="chatTarget" style="overflow-x: scroll; height: 400px; max-height: 400px;">
+		</div>
+	</body>
+
+	<script>
+		var arrayIp = [], arrayAlias= [], receptor;
+
+		var conn = null;
+		var isConnected = false; 
+
+		$(function() {
+			setOffline();
+		});
+
+		function setOnline() {
+			$("#status").removeClass("label-warning");
+			$("#status").addClass("label-success");
+			$("#status").html("Conectado");
+			$("button.connect").html("Desconectar");
+			$("#offlineActions").hide();
+			$("#onlineActions").show();
+			isConnected = true;
+		}
+
+		function setOffline() {
+			$("#status").addClass("label-warning");
+			$("#status").removeClass("label-success");
+			$("#status").html("Desconectado");
+			$("button.connect").html("Conectar");
+			$("#offlineActions").show();
+			$("#onlineActions").hide();
+			$("#chatTarget").html("");
+			isConnected = false;
+		}
+
+		function enviar() {
+			msg = $("#message").val();
+			if (msg == "") {
+				alert("No se puede enviar un mensaje vacío");
+				return;
+			}
+			conn.send(msg);
+			$("#chatTarget").prepend("Yo: "+ msg + "<br/>");
+			$("#message").val("");
+		}
+
+		function establecerConexion() {
+			
+			var url = "ws://" + $("#conn_str").val();
+			if(isConnected) {
+				setOffline();
+				return;
+			}
+		
+			conn = new WebSocket(url);
+
+			conn.onmessage = function(e) {
+				$("#chatTarget").prepend(receptor + ": "+e.data+"<br/>");
+			}
+
+			conn.onopen = function(e) {
+				console.log(e);
+				if(validarCampos()){
+					agregarContacto();
+					setOnline();
+					console.log("Conectado");
+					isConnected = true;
+				
+				}
+				else return;
+					
+			};
+
+			conn.onclose = function(e) {
+				console.log("Desconectado");
+				setOffline();
+			};
+
+			
+		}
+
+		function agregarContacto(){
+			var divContactos = document.getElementById("contactos");
+			var ip = document.getElementById("conn_str").value;
+			var alias = document.getElementById("alias").value;
+
+			if(arrayAlias.indexOf(alias) == -1){
+				var parrafoAlias = document.createElement("P");
+				arrayAlias.push(alias);
+				arrayIp.push(ip);
+
+				parrafoAlias.innerHTML= alias;
+				parrafoAlias.setAttribute("onclick","llenarCampos(this); seleccionarParrafo(this);");
+				parrafoAlias.style.cursor="pointer";
+				parrafoAlias.id=ip;
+				divContactos.appendChild(parrafoAlias);
+			}
+			else{
+				return;
+			}
+			
+			
+		}
+
+		function  seleccionarParrafo(contacto){
+			var i,nContactos;
+			todosP = document.getElementsByTagName("p");
+			nContactos=todosP.length;
+			for (i = 0; i< nContactos; i++) {
+				todosP[i].style.backgroundColor = "white";
+			}
+			
+			contacto.style.backgroundColor = "#3592f8";
+
+		}
+		
+		function llenarCampos(contacto){
+			aliasP= contacto.innerHTML;
+			idP= contacto.id;
+
+			document.getElementById("conn_str").value = idP;
+			document.getElementById("alias").value = aliasP ;
+		}
+
+		function validarCampos(){
+			var ip = document.getElementById("conn_str").value;
+			var alias = document.getElementById("alias").value;
+			var advertencia = document.getElementById("advertencia");
+
+			receptor = alias;
+			
+			if(arrayAlias.indexOf(alias) != -1 && arrayIp[arrayAlias.indexOf(alias)] != ip){
+				advertencia.innerHTML = "El alias pertenece a otra IP, selecciona al alias desde la agenda de contactos.";
+				advertencia.style.display = "flex";
+				advertencia.style.alignItems = "center";
+				return false;
+			}
+
+			else if(arrayIp.indexOf(ip) != -1 && arrayAlias[arrayIp.indexOf(ip)] != alias){
+				advertencia.innerHTML = "Ya existe un registro con esta IP.";
+				advertencia.style.display = "flex";
+				advertencia.style.alignItems = "center";
+				return false;
+			}
+
+			else{
+				advertencia.style.display = "none";
+				return true;
+			}
+		}
+	</script>
+</html>
